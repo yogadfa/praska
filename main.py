@@ -1,7 +1,7 @@
 def tokenize(source):
     tokens = []
     op = ["+","-","/","*","="]
-    boolean = ["<",">","==","==="]
+    boolean = ["<",">","==","!=",">=","<=","!"]
     i = 0  # posisi karakter yang lagi dibaca
     
     while i < len(source):
@@ -10,32 +10,72 @@ def tokenize(source):
            start = i
            while i < len(source) and source[i].isdigit():
              i+=1
-             num_str = source[start:i]
+             num = source[start:i]
              
              continue
-           tokens.append(f"NUMBER({num_str})")
+           tokens.append(("NUMBER",int(num)))
            
         elif char.isalpha():
           start = i
-          while i < len(source) and source[i].isdigit():
+          while i < len(source) and source[i].isalpha():
             i += 1
             
             var_str = source[start:i]
             
             continue
-          tokens.append(f"IDENTIFIER({char})")
+          tokens.append("IDENTIFIER",var_str)
             
         elif char == " ":
           pass
         elif char in op or char in boolean:
-          tokens.append(f"CHAR({char})")
+          start = i
+          while i < len(source) and (source[i] in op or source[i] in boolean):
+            i += 1
+            
+            char_str = source[start:i]
+            
+          if char_str == "==":
+            tokens.append(("EQUALEQUAL","=="))
+          elif char_str == "!=":
+            tokens.append(("NOTEQUALS","!="))
+          elif char_str == "<=":
+            tokens.append(("LESSEQUAL","<="))
+          elif char_str == ">=":
+            tokens.append(("GREATEREQUAL",">="))
+          elif char_str == "=":
+            tokens.append(("EQUAL","="))
+          elif char_str == "+":
+            tokens.append(("PLUS","+"))
+          elif char_str == "*":
+            tokens.append(("TIMES","*"))
+          elif char_str == "/":
+            tokens.append(("divide","/"))
+          elif char_str == ">":
+            tokens.append(("GREATERTHAN",">"))
+          elif char_str == "<":
+            tokens.append(("LESSTHAN","<"))
+          elif char_str == "-":
+            tokens.append(("minus","-"))
+          elif char_str == "!":
+            tokens.append(("NOT","!"))
+          else:
+            tokens.append("ERROR_CHAR_NOT_DEFINITED")
+          continue
+        
         else:
-          tokens.appenf("ERROR")
+          tokens.append("ERROR_TYPE_NOT_DEFINITED")
         
         
         i += 1  # maju ke karakter berikutnya
     
     return tokens
+    
+def run(source):
+  code = tokenize(source)
+  i = 0
+  
+  while i < len(code):
+    break
 
-a = "10 + 5"
+a = "!="
 print(tokenize(a))
