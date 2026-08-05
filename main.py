@@ -1,81 +1,118 @@
+import operator
+
+ops = {
+    "+": operator.add,
+    "-": operator.sub,
+    "/": operator.truediv,
+    "*": operator.mul
+}
+
 def tokenize(source):
     tokens = []
-    op = ["+","-","/","*","="]
-    boolean = ["<",">","==","!=",">=","<=","!"]
-    i = 0  # posisi karakter yang lagi dibaca
+    op = ["+", "-", "/", "*", "="]
+    boolean = ["<", ">", "==", "!=", ">=", "<=", "!"]
+    i = 0
     
     while i < len(source):
         char = source[i]
+        
         if char.isdigit():
-           start = i
-           while i < len(source) and source[i].isdigit():
-             i+=1
-             num = source[start:i]
-             
-             continue
-           tokens.append(("NUMBER",int(num)))
-           
+            start = i
+            while i < len(source) and source[i].isdigit():
+                i += 1
+            num = source[start:i]
+            tokens.append(("NUMBER", int(num)))
+            continue  # i sudah di posisi berikutnya
+            
         elif char.isalpha():
-          start = i
-          while i < len(source) and source[i].isalpha():
-            i += 1
-            
+            start = i
+            while i < len(source) and source[i].isalpha():
+                i += 1
             var_str = source[start:i]
-            
+            tokens.append(("IDENTIFIER", var_str))  # ✅ tambah kurung
             continue
-          tokens.append("IDENTIFIER",var_str)
             
         elif char == " ":
-          pass
-        elif char in op or char in boolean:
-          start = i
-          while i < len(source) and (source[i] in op or source[i] in boolean):
-            i += 1
+            pass
             
+        elif char in op or char in boolean:
+            start = i
+            while i < len(source) and (source[i] in op or source[i] in boolean):
+                i += 1
             char_str = source[start:i]
             
-          if char_str == "==":
-            tokens.append(("EQUALEQUAL","=="))
-          elif char_str == "!=":
-            tokens.append(("NOTEQUALS","!="))
-          elif char_str == "<=":
-            tokens.append(("LESSEQUAL","<="))
-          elif char_str == ">=":
-            tokens.append(("GREATEREQUAL",">="))
-          elif char_str == "=":
-            tokens.append(("EQUAL","="))
-          elif char_str == "+":
-            tokens.append(("PLUS","+"))
-          elif char_str == "*":
-            tokens.append(("TIMES","*"))
-          elif char_str == "/":
-            tokens.append(("divide","/"))
-          elif char_str == ">":
-            tokens.append(("GREATERTHAN",">"))
-          elif char_str == "<":
-            tokens.append(("LESSTHAN","<"))
-          elif char_str == "-":
-            tokens.append(("minus","-"))
-          elif char_str == "!":
-            tokens.append(("NOT","!"))
-          else:
-            tokens.append("ERROR_CHAR_NOT_DEFINITED")
-          continue
-        
+            if char_str == "==":
+                tokens.append(("EQUALEQUAL", "=="))
+            elif char_str == "!=":
+                tokens.append(("NOTEQUALS", "!="))
+            elif char_str == "<=":
+                tokens.append(("LESSEQUAL", "<="))
+            elif char_str == ">=":
+                tokens.append(("GREATEREQUAL", ">="))
+            elif char_str == "=":
+                tokens.append(("EQUAL", "="))
+            elif char_str == "+":
+                tokens.append(("PLUS", "+"))
+            elif char_str == "*":
+                tokens.append(("TIMES", "*"))
+            elif char_str == "/":
+                tokens.append(("DIVIDE", "/"))
+            elif char_str == ">":
+                tokens.append(("GREATERTHAN", ">"))
+            elif char_str == "<":
+                tokens.append(("LESSTHAN", "<"))
+            elif char_str == "-":
+                tokens.append(("MINUS", "-"))
+            elif char_str == "!":
+                tokens.append(("NOT", "!"))
+            else:
+                tokens.append(("ERROR_CHAR_NOT_DEFINED", char_str))
+            continue  # i sudah di posisi berikutnya
+            
         else:
-          tokens.append("ERROR_TYPE_NOT_DEFINITED")
+            tokens.append(("ERROR_TYPE_NOT_DEFINED", char))
         
-        
-        i += 1  # maju ke karakter berikutnya
+        i += 1
     
     return tokens
-    
-def run(source):
-  code = tokenize(source)
-  i = 0
-  
-  while i < len(code):
-    break
 
-a = "!="
-print(tokenize(a))
+
+def parse_primary(token, pos):
+    if pos >= len(token):
+        raise SyntaxError("Unexpected end of input")
+    tipe, nilai = token[pos]
+    if tipe == "NUMBER":
+        pos += 1
+        return (int(nilai), pos)
+    else:
+        raise SyntaxError(f"Expected a number, got {tipe}")
+
+
+def parse_multiplication(token, pos):
+    left, pos = parse_primary(token, pos)
+
+    while pos < len(token) and token[pos][0] in ("TIMES", "DIVIDE"):  # ✅ cek token[0]
+        op_type, op_val = token[pos]  # ✅ ambil operator
+        pos += 1
+        right, pos = parse_primary(token, pos)
+        left = (op_val, left, right)  # ✅ simpan operator string, bukan tuple
+
+    return (left, pos)
+
+
+def run(source):
+    token = tokenize(source)
+    print("Tokens:", token)  # debug
+    pos = 0
+    while pos < len(token):
+        value, pos = parse_multiplication(token, pos)
+        print("Result:", value)
+
+
+# Test
+a = "2 / 1"
+run(a)
+
+# Test lebih kompleks
+b = "2 * 3 / 4"
+run(b)
