@@ -66,9 +66,17 @@ def tokenize(source):
             elif char_str == "!":
                 tokens.append(("NOT", "!"))
             else:
-                tokens.append(("ERROR_CHAR_NOT_DEFINED", char_str))
-            continue  # i sudah di posisi berikutnya
-            
+                tokens.append(("ERROR_CHAR_NOT_DEFINED ", char_str))
+            continue
+        elif char[0] in ("(",")"):
+            char_str = char
+
+            if char_str == "(":
+                tokens.append(("LPAREN","("))
+            elif char_str == ")":
+                tokens.append(("RPAREN",")"))
+            else:
+                tokens.append(("ERROR_CHAR_NOT_DEFINED ", char_str))
         else:
             tokens.append(("ERROR_TYPE_NOT_DEFINED", char))
         
@@ -84,6 +92,19 @@ def parse_primary(token, pos):
     if tipe == "NUMBER":
         pos += 1
         return (int(nilai), pos)
+    elif tipe == "LPAREN":
+        if pos+1 < len(token) and token[pos +1][0] == "RPAREN":
+            pos += 2
+            return (None, pos)
+             
+        pos += 1
+        value, pos = parse_addition(token, pos)
+        
+        if token[pos][0] == "RPAREN":
+            pos += 1
+            return value,pos
+        else:
+            raise SyntaxError(f"Expected ')', got {tipe}")
     else:
         raise SyntaxError(f"Expected a number, got {tipe}")
 
@@ -122,9 +143,9 @@ def run(source):
 
 
 # Test
-a = "2 + 1 * 3"
+a = "()"
 run(a)
 
 # Test lebih kompleks
-b = "2 + 3 / 4 * 5 + 6"
+b = "(5+5)*6"
 run(b)
