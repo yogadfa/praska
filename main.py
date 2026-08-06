@@ -99,20 +99,32 @@ def parse_multiplication(token, pos):
 
     return (left, pos)
 
+def parse_addition(token, pos):
+    left, pos = parse_primary(token, pos)
+
+    while pos < len(token) and token[pos][0] in ("PLUS","MINUS"):
+        op_type, op_val = token[pos]
+        pos += 1
+        right, pos = parse_primary(token, pos)
+        left = (op_val, left, right)
+
+    return (left, pos)
+
 
 def run(source):
     token = tokenize(source)
     print("Tokens:", token)  # debug
+    print()
     pos = 0
     while pos < len(token):
-        value, pos = parse_multiplication(token, pos)
+        value, pos = parse_addition(token, pos)
         print("Result:", value)
 
 
 # Test
-a = "2 / 1"
+a = "2 + 1"
 run(a)
 
 # Test lebih kompleks
-b = "2 * 3 / 4"
+b = "2 + 3 - 4"
 run(b)
