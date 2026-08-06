@@ -91,21 +91,21 @@ def parse_primary(token, pos):
 def parse_multiplication(token, pos):
     left, pos = parse_primary(token, pos)
 
-    while pos < len(token) and token[pos][0] in ("TIMES", "DIVIDE"):  # ✅ cek token[0]
-        op_type, op_val = token[pos]  # ✅ ambil operator
+    while pos < len(token) and token[pos][0] in ("TIMES", "DIVIDE"):
+        op_type, op_val = token[pos]  
         pos += 1
         right, pos = parse_primary(token, pos)
-        left = (op_val, left, right)  # ✅ simpan operator string, bukan tuple
+        left = (op_val, left, right)
 
     return (left, pos)
 
 def parse_addition(token, pos):
-    left, pos = parse_primary(token, pos)
-
+    left, pos = parse_multiplication(token, pos)
+        
     while pos < len(token) and token[pos][0] in ("PLUS","MINUS"):
         op_type, op_val = token[pos]
         pos += 1
-        right, pos = parse_primary(token, pos)
+        right, pos = parse_multiplication(token, pos)
         left = (op_val, left, right)
 
     return (left, pos)
@@ -113,7 +113,7 @@ def parse_addition(token, pos):
 
 def run(source):
     token = tokenize(source)
-    print("Tokens:", token)  # debug
+    print("Tokens:", token) 
     print()
     pos = 0
     while pos < len(token):
@@ -122,9 +122,9 @@ def run(source):
 
 
 # Test
-a = "2 + 1"
+a = "2 + 1 * 3"
 run(a)
 
 # Test lebih kompleks
-b = "2 + 3 - 4"
+b = "2 + 3 / 4 * 5 + 6"
 run(b)
