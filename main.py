@@ -22,24 +22,21 @@ def tokenize(source):
                 i += 1
             num = source[start:i]
             tokens.append(("NUMBER", int(num)))
-            continue  # i sudah di posisi berikutnya
+            continue
             
         elif char.isalpha():
             start = i
             while i < len(source) and source[i].isalpha():
                 i += 1
             var_str = source[start:i]
-            tokens.append(("IDENTIFIER", var_str))  # ✅ tambah kurung
+            tokens.append(("IDENTIFIER", var_str))
             continue
             
         elif char == " ":
             pass
             
         elif char in op or char in boolean:
-            start = i
-            while i < len(source) and (source[i] in op or source[i] in boolean):
-                i += 1
-            char_str = source[start:i]
+            char_str = source[i]
             
             if char_str == "==":
                 tokens.append(("EQUALEQUAL", "=="))
@@ -67,7 +64,7 @@ def tokenize(source):
                 tokens.append(("NOT", "!"))
             else:
                 tokens.append(("ERROR_CHAR_NOT_DEFINED ", char_str))
-            continue
+            
         elif char[0] in ("(",")"):
             char_str = char
 
@@ -105,12 +102,30 @@ def parse_primary(token, pos):
             return value,pos
         else:
             raise SyntaxError(f"Expected ')', got {tipe}")
+    elif tipe == "MINUS":
+        pos += 1
+        value, pos = parse_primary(token, pos)
+        
+        return value, pos
     else:
         raise SyntaxError(f"Expected a number, got {tipe}")
 
+def parse_unary(token, pos):
+    if token[pos][0] == "MINUS":
+        pos += 1
+        
+        primary, pos = parse_primary(token, pos)
+        value = ("-",primary)
+
+        return value, pos
+    else:
+        value, pos = parse_primary(token, pos)
+        
+        return (value, pos)
+
 
 def parse_multiplication(token, pos):
-    left, pos = parse_primary(token, pos)
+    left, pos = parse_unary(token, pos)
 
     while pos < len(token) and token[pos][0] in ("TIMES", "DIVIDE"):
         op_type, op_val = token[pos]  
@@ -143,9 +158,9 @@ def run(source):
 
 
 # Test
-a = "()"
+a = "-(1+3)"
 run(a)
 
 # Test lebih kompleks
-b = "(5+5)*6"
+b = "5 - -6"
 run(b)
