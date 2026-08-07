@@ -130,7 +130,7 @@ def parse_multiplication(token, pos):
     while pos < len(token) and token[pos][0] in ("TIMES", "DIVIDE"):
         op_type, op_val = token[pos]  
         pos += 1
-        right, pos = parse_primary(token, pos)
+        right, pos = parse_unary(token, pos)
         left = (op_val, left, right)
 
     return (left, pos)
@@ -158,9 +158,9 @@ def run(source):
 
 
 # Test
-a = "-(1+3)"
+a = "-5*6"
 run(a)
 
 # Test lebih kompleks
-b = "5 - -6"
+b = "1/-3"
 run(b)
