@@ -102,7 +102,7 @@ def parse_primary(token, pos):
     if tipe == "NUMBER":
         pos += 1
         
-        return (int(nilai), pos)
+        return ((tipe,int(nilai)), pos)
     elif tipe == "LPAREN":
         if pos+1 < len(token) and token[pos +1][0] == "RPAREN":
             pos += 2
@@ -166,21 +166,53 @@ def parse_addition(token, pos):
 
     return (left, pos)
 
+def evaluate(node, variabel):
+    tipe = node[0]
+
+    if tipe == "NUMBER":
+        return node[1]
+    elif tipe == "UMINUS":
+        value = node[1]
+
+        return -evaluate(value)
+    elif tipe == "PLUS":
+        left, right = node[1], node[2]
+
+        return evaluate(left) + evaluate(right)
+    elif tipe == "MINUS":
+        left, right = node[1], node[2]
+
+        return evaluate(left) - evaluate(right)
+    elif tipe == "TIMES":
+        left, right = node[1], node[2]
+
+        return evaluate(left) * evaluate(right)
+    elif tipe == "DIVIDE":
+        left, right = node[1], node[2]
+
+        return evaluate(left) / evaluate(right)
+    elif tipe == "VARIABEL":
+        variabel[node[1]] = node[2]
+    else:
+        raise SyntaxError(f"expected OP type {tipe}")
 
 def run(source):
     token = tokenize(source)
     print("Tokens:", token) 
     print()
     pos = 0
+    variabel = {}
+    
     while pos < len(token):
         value, pos = parse_assignment(token, pos)
-        print("Result:", value)
+        result = evaluate(value, variabel)
+        print("Result:", result)
 
 
 # Test
-a = "x"
+a = "x = 5"
 run(a)
 
 # Test lebih kompleks
-b = "x = y+5"
-run(b)
+b = "-5+6/5*2--4"
+#run(b)
