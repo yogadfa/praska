@@ -46,8 +46,6 @@ def tokenize(source):
                 tokens.append(("LESSEQUAL", "<="))
             elif char_str == ">=":
                 tokens.append(("GREATEREQUAL", ">="))
-            elif char_str == "=":
-                tokens.append(("EQUAL", "="))
             elif char_str == "+":
                 tokens.append(("PLUS", "+"))
             elif char_str == "*":
@@ -62,6 +60,8 @@ def tokenize(source):
                 tokens.append(("MINUS", "-"))
             elif char_str == "!":
                 tokens.append(("NOT", "!"))
+            elif char_str == "=":
+                tokens.append(("EQUAL", "="))
             else:
                 tokens.append(("ERROR_CHAR_NOT_DEFINED ", char_str))
             
@@ -81,6 +81,19 @@ def tokenize(source):
     
     return tokens
 
+def parse_assignment(token, pos):
+    if pos+1 < len(token) and token[pos+1][0] == "EQUAL" and token[pos][0] == "IDENTIFIER":
+        identifier = token[pos][1]
+        pos += 2
+
+        value, pos = parse_addition(token, pos)
+        var = ("VARIABEL", identifier, value)
+
+        return (var, pos)
+    else:
+        value, pos = parse_addition(token,pos)
+
+        return (value, pos)
 
 def parse_primary(token, pos):
     if pos >= len(token):
@@ -88,10 +101,12 @@ def parse_primary(token, pos):
     tipe, nilai = token[pos]
     if tipe == "NUMBER":
         pos += 1
+        
         return (int(nilai), pos)
     elif tipe == "LPAREN":
         if pos+1 < len(token) and token[pos +1][0] == "RPAREN":
             pos += 2
+            
             return (None, pos)
              
         pos += 1
@@ -99,6 +114,7 @@ def parse_primary(token, pos):
         
         if token[pos][0] == "RPAREN":
             pos += 1
+            
             return value,pos
         else:
             raise SyntaxError(f"Expected ')', got {tipe}")
@@ -107,6 +123,10 @@ def parse_primary(token, pos):
         value, pos = parse_primary(token, pos)
         
         return value, pos
+    elif tipe == "IDENTIFIER":
+        pos += 1
+
+        return ((tipe,nilai), pos)
     else:
         raise SyntaxError(f"Expected a number, got {tipe}")
 
@@ -115,7 +135,7 @@ def parse_unary(token, pos):
         pos += 1
         
         primary, pos = parse_primary(token, pos)
-        value = ("-",primary)
+        value = ("UMINUS",primary)
 
         return value, pos
     else:
@@ -131,7 +151,7 @@ def parse_multiplication(token, pos):
         op_type, op_val = token[pos]  
         pos += 1
         right, pos = parse_unary(token, pos)
-        left = (op_val, left, right)
+        left = (op_type, left, right)
 
     return (left, pos)
 
@@ -142,7 +162,7 @@ def parse_addition(token, pos):
         op_type, op_val = token[pos]
         pos += 1
         right, pos = parse_multiplication(token, pos)
-        left = (op_val, left, right)
+        left = (op_type, left, right)
 
     return (left, pos)
 
@@ -153,14 +173,14 @@ def run(source):
     print()
     pos = 0
     while pos < len(token):
-        value, pos = parse_addition(token, pos)
+        value, pos = parse_assignment(token, pos)
         print("Result:", value)
 
 
 # Test
-a = "-5*6"
+a = "x"
 run(a)
 
 # Test lebih kompleks
-b = "1/-3"
+b = "x = y+5"
 run(b)
