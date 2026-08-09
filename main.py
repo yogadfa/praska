@@ -1,11 +1,13 @@
 import operator
 
+#var global
 ops = {
     "+": operator.add,
     "-": operator.sub,
     "/": operator.truediv,
     "*": operator.mul
 }
+variabel = {}
 
 def tokenize(source):
     tokens = []
@@ -81,21 +83,21 @@ def tokenize(source):
     
     return tokens
 
-def parse_assignment(token, pos):
+def parse_assignment(token, var, pos):
     if pos+1 < len(token) and token[pos+1][0] == "EQUAL" and token[pos][0] == "IDENTIFIER":
         identifier = token[pos][1]
         pos += 2
 
-        value, pos = parse_addition(token, pos)
-        var = ("VARIABEL", identifier, value)
+        value, pos = parse_addition(token, var, pos)
+        i = ("VARIABEL", identifier, value)
 
-        return (var, pos)
+        return (i, pos)
     else:
-        value, pos = parse_addition(token,pos)
+        value, pos = parse_addition(token, var,pos)
 
         return (value, pos)
 
-def parse_primary(token, pos):
+def parse_primary(token, var, pos):
     if pos >= len(token):
         raise SyntaxError("Unexpected end of input")
     tipe, nilai = token[pos]
@@ -110,7 +112,7 @@ def parse_primary(token, pos):
             return (None, pos)
              
         pos += 1
-        value, pos = parse_addition(token, pos)
+        value, pos = parse_addition(token, var, pos)
         
         if token[pos][0] == "RPAREN":
             pos += 1
@@ -120,7 +122,7 @@ def parse_primary(token, pos):
             raise SyntaxError(f"Expected ')', got {tipe}")
     elif tipe == "MINUS":
         pos += 1
-        value, pos = parse_primary(token, pos)
+        value, pos = parse_primary(token, var, pos)
         
         return value, pos
     elif tipe == "IDENTIFIER":
@@ -128,45 +130,45 @@ def parse_primary(token, pos):
 
         return ((tipe,nilai), pos)
     else:
-        raise SyntaxError(f"Expected a number, got {tipe}")
+        raise SyntaxError(f"Expected a type, got {tipe}")
 
-def parse_unary(token, pos):
+def parse_unary(token, var, pos):
     if token[pos][0] == "MINUS":
         pos += 1
         
-        primary, pos = parse_primary(token, pos)
+        primary, pos = parse_primary(token, var, pos)
         value = ("UMINUS",primary)
 
         return value, pos
     else:
-        value, pos = parse_primary(token, pos)
+        value, pos = parse_primary(token, var, pos)
         
         return (value, pos)
 
 
-def parse_multiplication(token, pos):
-    left, pos = parse_unary(token, pos)
+def parse_multiplication(token, var, pos):
+    left, pos = parse_unary(token, var, pos)
 
     while pos < len(token) and token[pos][0] in ("TIMES", "DIVIDE"):
         op_type, op_val = token[pos]  
         pos += 1
-        right, pos = parse_unary(token, pos)
+        right, pos = parse_unary(token, var, pos)
         left = (op_type, left, right)
 
     return (left, pos)
 
-def parse_addition(token, pos):
-    left, pos = parse_multiplication(token, pos)
+def parse_addition(token, var, pos):
+    left, pos = parse_multiplication(token, var, pos)
         
     while pos < len(token) and token[pos][0] in ("PLUS","MINUS"):
         op_type, op_val = token[pos]
         pos += 1
-        right, pos = parse_multiplication(token, pos)
+        right, pos = parse_multiplication(token, var, pos)
         left = (op_type, left, right)
 
     return (left, pos)
 
-def evaluate(node, variabel):
+def evaluate(node,var):
     tipe = node[0]
 
     if tipe == "NUMBER":
@@ -174,45 +176,53 @@ def evaluate(node, variabel):
     elif tipe == "UMINUS":
         value = node[1]
 
-        return -evaluate(value)
+        return -evaluate(value,var)
     elif tipe == "PLUS":
         left, right = node[1], node[2]
 
-        return evaluate(left) + evaluate(right)
+        return evaluate(left,var) + evaluate(right, var)
     elif tipe == "MINUS":
         left, right = node[1], node[2]
 
-        return evaluate(left) - evaluate(right)
+        return evaluate(left, var) - evaluate(right, var)
     elif tipe == "TIMES":
         left, right = node[1], node[2]
 
-        return evaluate(left) * evaluate(right)
+        return evaluate(left, var) * evaluate(right, var)
     elif tipe == "DIVIDE":
         left, right = node[1], node[2]
 
-        return evaluate(left) / evaluate(right)
+        return evaluate(left, var) / evaluate(right, var)
     elif tipe == "VARIABEL":
-        variabel[node[1]] = node[2]
+        name, value = node[1], node[2]
+        var[name] = evaluate(value, var)
+    elif tipe == "IDENTIFIER":
+        nilai = node[1]
+        
+        if nilai in var:
+            return var[nilai]
+        else:
+            raise SyntaxError(f"Error identifier no definited, got {nilai}")
     else:
         raise SyntaxError(f"expected OP type {tipe}")
 
 def run(source):
     token = tokenize(source)
     print("Tokens:", token) 
-    print()
     pos = 0
-    variabel = {}
     
     while pos < len(token):
-        value, pos = parse_assignment(token, pos)
-        result = evaluate(value, variabel)
+        value, pos = parse_assignment(token, variabel, pos)
+        print("parse_assigment tuple return:", value)
+        result = evaluate(value,variabel)
+        print("var global: ", variabel)
+        print()
         print("Result:", result)
 
 
 # Test
 a = "x = 5"
 run(a)
-
 # Test lebih kompleks
-b = "-5+6/5*2--4"
-#run(b)
+b = "x"
+run(b)
