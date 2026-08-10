@@ -83,21 +83,21 @@ def tokenize(source):
     
     return tokens
 
-def parse_assignment(token, var, pos):
+def parse_assignment(token, pos):
     if pos+1 < len(token) and token[pos+1][0] == "EQUAL" and token[pos][0] == "IDENTIFIER":
         identifier = token[pos][1]
         pos += 2
 
-        value, pos = parse_addition(token, var, pos)
+        value, pos = parse_addition(token, pos)
         i = ("VARIABEL", identifier, value)
 
         return (i, pos)
     else:
-        value, pos = parse_addition(token, var,pos)
+        value, pos = parse_addition(token,pos)
 
         return (value, pos)
 
-def parse_primary(token, var, pos):
+def parse_primary(token, pos):
     if pos >= len(token):
         raise SyntaxError("Unexpected end of input")
     tipe, nilai = token[pos]
@@ -112,7 +112,7 @@ def parse_primary(token, var, pos):
             return (None, pos)
              
         pos += 1
-        value, pos = parse_addition(token, var, pos)
+        value, pos = parse_addition(token, pos)
         
         if token[pos][0] == "RPAREN":
             pos += 1
@@ -122,7 +122,7 @@ def parse_primary(token, var, pos):
             raise SyntaxError(f"Expected ')', got {tipe}")
     elif tipe == "MINUS":
         pos += 1
-        value, pos = parse_primary(token, var, pos)
+        value, pos = parse_primary(token, pos)
         
         return value, pos
     elif tipe == "IDENTIFIER":
@@ -132,43 +132,43 @@ def parse_primary(token, var, pos):
     else:
         raise SyntaxError(f"Expected a type, got {tipe}")
 
-def parse_unary(token, var, pos):
+def parse_unary(token, pos):
     if token[pos][0] == "MINUS":
         pos += 1
         
-        primary, pos = parse_primary(token, var, pos)
+        primary, pos = parse_primary(token, pos)
         value = ("UMINUS",primary)
 
         return value, pos
     else:
-        value, pos = parse_primary(token, var, pos)
+        value, pos = parse_primary(token, pos)
         
         return (value, pos)
 
 
-def parse_multiplication(token, var, pos):
-    left, pos = parse_unary(token, var, pos)
+def parse_multiplication(token, pos):
+    left, pos = parse_unary(token, pos)
 
     while pos < len(token) and token[pos][0] in ("TIMES", "DIVIDE"):
         op_type, op_val = token[pos]  
         pos += 1
-        right, pos = parse_unary(token, var, pos)
+        right, pos = parse_unary(token, pos)
         left = (op_type, left, right)
 
     return (left, pos)
 
-def parse_addition(token, var, pos):
-    left, pos = parse_multiplication(token, var, pos)
+def parse_addition(token, pos):
+    left, pos = parse_multiplication(token, pos)
         
     while pos < len(token) and token[pos][0] in ("PLUS","MINUS"):
         op_type, op_val = token[pos]
         pos += 1
-        right, pos = parse_multiplication(token, var, pos)
+        right, pos = parse_multiplication(token, pos)
         left = (op_type, left, right)
 
     return (left, pos)
 
-def evaluate(node,var):
+def evaluate(node, var):
     tipe = node[0]
 
     if tipe == "NUMBER":
@@ -212,7 +212,7 @@ def run(source):
     pos = 0
     
     while pos < len(token):
-        value, pos = parse_assignment(token, variabel, pos)
+        value, pos = parse_assignment(token, pos)
         print("parse_assigment tuple return:", value)
         result = evaluate(value,variabel)
         print("var global: ", variabel)
@@ -224,5 +224,5 @@ def run(source):
 a = "x = 5"
 run(a)
 # Test lebih kompleks
-b = "x"
+b = "x + 5"
 run(b)
