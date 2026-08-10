@@ -101,6 +101,10 @@ def parse_primary(token, pos):
     if pos >= len(token):
         raise SyntaxError("Unexpected end of input")
     tipe, nilai = token[pos]
+
+    if pos+1 < len(token) and token[pos+1][0] == "EQUAL" and tipe != "IDENTIFIER":
+        raise SyntaxError(f"Cannot assign to a {tipe}")
+    
     if tipe == "NUMBER":
         pos += 1
         
@@ -114,12 +118,12 @@ def parse_primary(token, pos):
         pos += 1
         value, pos = parse_addition(token, pos)
         
-        if token[pos][0] == "RPAREN":
+        if pos < len(token) and token[pos][0] == "RPAREN":
             pos += 1
             
             return value,pos
         else:
-            raise SyntaxError(f"Expected ')', got {tipe}")
+            raise SyntaxError(f"Expected ')'")
     elif tipe == "MINUS":
         pos += 1
         value, pos = parse_primary(token, pos)
@@ -133,6 +137,9 @@ def parse_primary(token, pos):
         raise SyntaxError(f"Expected a type, got {tipe}")
 
 def parse_unary(token, pos):
+    if pos > len(token):
+        raise SyntaxError("Unexpected end of input")
+    
     if token[pos][0] == "MINUS":
         pos += 1
         
@@ -221,8 +228,8 @@ def run(source):
 
 
 # Test
-a = "x = 5"
+a = "5"
 run(a)
 # Test lebih kompleks
-b = "x + 5"
-run(b)
+b = "xyz + 5"
+#run(b)
