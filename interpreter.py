@@ -1,4 +1,6 @@
-def evaluate(node, var):
+var = {}
+
+def evaluate(node):
     tipe = node[0]
 
     if tipe == "NUMBER":
@@ -6,26 +8,26 @@ def evaluate(node, var):
     elif tipe == "UMINUS":
         value = node[1]
 
-        return -evaluate(value,var)
+        return -evaluate(value)
     elif tipe == "PLUS":
         left, right = node[1], node[2]
 
-        return evaluate(left,var) + evaluate(right, var)
+        return evaluate(left) + evaluate(right)
     elif tipe == "MINUS":
         left, right = node[1], node[2]
 
-        return evaluate(left, var) - evaluate(right, var)
+        return evaluate(left) - evaluate(right)
     elif tipe == "TIMES":
         left, right = node[1], node[2]
 
-        return evaluate(left, var) * evaluate(right, var)
+        return evaluate(left) * evaluate(right)
     elif tipe == "DIVIDE":
         left, right = node[1], node[2]
 
-        return evaluate(left, var) / evaluate(right, var)
+        return evaluate(left) / evaluate(right)
     elif tipe == "VARIABEL":
         name, value = node[1], node[2]
-        var[name] = evaluate(value, var)
+        var[name] = evaluate(value)
     elif tipe == "IDENTIFIER":
         nilai = node[1]
 

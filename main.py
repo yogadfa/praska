@@ -19,5 +19,5 @@ def run(source):
 a = "a =5"
 run(a)
 # Test lebih kompleks
-b = "a + 5"
+b = "(a+5) / 2"
 run(b)
