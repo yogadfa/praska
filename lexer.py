@@ -1,4 +1,3 @@
-
 def tokenize(source):
     tokens = []
     op = ["+", "-", "/", "*", "="]
@@ -28,7 +27,10 @@ def tokenize(source):
             pass
             
         elif char in op or char in boolean:
-            char_str = source[i]
+            start = i
+            while i < len(source) and (source[i] in op or source[i] in boolean):
+                i += 1
+            char_str = source[start:i]
             
             if char_str == "==":
                 tokens.append(("EQUALEQUAL", "=="))
@@ -56,6 +58,7 @@ def tokenize(source):
                 tokens.append(("EQUAL", "="))
             else:
                 tokens.append(("ERROR_CHAR_NOT_DEFINED ", char_str))
+            continue
             
         elif char[0] in ("(",")"):
             char_str = char

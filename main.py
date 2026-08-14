@@ -16,8 +16,8 @@ def run(source):
 
 
 # Test
-a = "a =5"
+a = ">="
 run(a)
 # Test lebih kompleks
-b = "(a+5) / 2"
+b = ">="
 run(b)
