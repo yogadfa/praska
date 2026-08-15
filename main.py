@@ -16,8 +16,8 @@ def run(source):
 
 
 # Test
-a = ">="
+a = "if(){}"
 run(a)
 # Test lebih kompleks
 b = ">="
-run(b)
+#run(b)

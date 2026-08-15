@@ -2,6 +2,12 @@ def tokenize(source):
     tokens = []
     op = ["+", "-", "/", "*", "="]
     boolean = ["<", ">", "==", "!=", ">=", "<=", "!"]
+    KEYWORDS ={
+        "if":"IF",
+        "else":"ELSE",
+        "elif":"ELIF"
+    }
+    
     i = 0
     
     while i < len(source):
@@ -20,7 +26,10 @@ def tokenize(source):
             while i < len(source) and source[i].isalpha():
                 i += 1
             var_str = source[start:i]
-            tokens.append(("IDENTIFIER", var_str))
+            if var_str in KEYWORDS:
+                tokens.append((KEYWORDS[var_str],var_str))
+            else:
+                tokens.append(("IDENTIFIER", var_str))
             continue
             
         elif char == " ":
@@ -60,13 +69,17 @@ def tokenize(source):
                 tokens.append(("ERROR_CHAR_NOT_DEFINED ", char_str))
             continue
             
-        elif char[0] in ("(",")"):
+        elif char[0] in ("(",")","{","}"):
             char_str = char
 
             if char_str == "(":
                 tokens.append(("LPAREN","("))
             elif char_str == ")":
                 tokens.append(("RPAREN",")"))
+            elif char_str == "{":
+                tokens.append(("LBRACE","{"))
+            elif char_str == "}":
+                tokens.append(("RBRACE","}"))
             else:
                 tokens.append(("ERROR_CHAR_NOT_DEFINED ", char_str))
         else:

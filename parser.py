@@ -91,3 +91,23 @@ def parse_addition(token, pos):
 
     return (left, pos)
 
+def parse_statement(token,pos):
+    if token[pos][0] == "IF":
+        pass
+    else:
+        return parse_assignment()
+
+def parse_block(token,pos):
+    statements = []
+    if token[pos][0] == "LBRACE":
+        pos += 1
+        
+        while pos < len(token) and token[pos][0] != "RBRACE":
+            stmt, pos = parse_statement(token,pos)
+            statements.append(stmt)
+
+    if token[pos][0] == "RBRACE":
+        pos +=1
+        return statements, pos
+    else:
+        raise SyntaxError("Expected '}'")
