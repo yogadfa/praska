@@ -1,4 +1,4 @@
-boolean = ("LESSTHAN", "GREATERTHAN", "EQUALEQUAL", "NOTEQUALS", "LESSEQUAL", "GREATEREQUAL")
+boolean = ("LESSTHAN", "GREATERTHAN", "EQUALEQUAL", "NOTEQUAL", "LESSEQUAL", "GREATEREQUAL")
 
 def parse_assignment(token, pos):
     if pos+1 < len(token) and token[pos+1][0] == "EQUAL" and token[pos][0] == "IDENTIFIER":

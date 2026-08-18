@@ -16,8 +16,8 @@ def run(source):
 
 
 # Test
-a = "if(5 < 6) {a = 5+1}"
+a = "if(5 < 6) {a = 5+5}"
 run(a)
 # Test lebih kompleks
-b = "if(8 <= 8) {b = a-1}"
-#run(b)
+b = "if(8 <= 8) {(10+10)/a}"
+run(b)

@@ -1,3 +1,4 @@
+from asyncio import Condition
 var = {}
 
 def evaluate(node):
@@ -25,6 +26,42 @@ def evaluate(node):
         left, right = node[1], node[2]
 
         return evaluate(left) / evaluate(right)
+    elif tipe == "EQUALEQUAL":
+      left, right = node[1], node[2]
+
+      return evaluate(left) == evaluate(right)
+    elif tipe == "NOTEQUAL":
+      left, right = node[1], node[2]
+
+      return evaluate(left) != evaluate(right)
+    elif tipe == "LESSTHAN":
+      left, right = node[1], node[2]
+
+      return evaluate(left) < evaluate(right)
+    elif tipe == "GREATERTHAN":
+      left, right = node[1], node[2]
+
+      return evaluate(left) > evaluate(right)
+    elif tipe == "LESSEQUAL":
+      left, right = node[1], node[2]
+
+      return evaluate(left) <= evaluate(right)
+    elif tipe == "GREATEREQUAL":
+      left, right = node[1], node[2]
+
+      return evaluate(left) >= evaluate(right)
+    elif tipe == "IF":
+      condition= node[1]
+      block = node[2]
+      condition = evaluate(condition)
+
+      if condition == True:
+        value = []
+        for stmt in block:
+          value.append(evaluate(stmt))
+        return evaluate(stmt)
+      else:
+        return None
     elif tipe == "VARIABEL":
         name, value = node[1], node[2]
         var[name] = evaluate(value)
