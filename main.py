@@ -8,16 +8,16 @@ def run(source):
     pos = 0
     
     while pos < len(token):
-        value, pos = parser.assignment(token, pos)
-        print("parse_assigment tuple return:", value)
+        value, pos = parser.statement(token, pos)
+        print("parser.statement tuple return:", value)
         result = interpreter.evaluate(value)
         print()
         print("Result:", result)
 
 
 # Test
-a = "if(){}"
+a = "if(5 < 6) {a = 5+1}"
 run(a)
 # Test lebih kompleks
-b = ">="
+b = "if(8 <= 8) {b = a-1}"
 #run(b)

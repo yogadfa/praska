@@ -1,5 +1,6 @@
+boolean = ("LESSTHAN", "GREATERTHAN", "EQUALEQUAL", "NOTEQUALS", "LESSEQUAL", "GREATEREQUAL")
 
-def assignment(token, pos):
+def parse_assignment(token, pos):
     if pos+1 < len(token) and token[pos+1][0] == "EQUAL" and token[pos][0] == "IDENTIFIER":
         identifier = token[pos][1]
         pos += 2
@@ -91,11 +92,11 @@ def parse_addition(token, pos):
 
     return (left, pos)
 
-def parse_statement(token,pos):
+def statement(token,pos):
     if token[pos][0] == "IF":
-        pass
+        return parse_if(token, pos)
     else:
-        return parse_assignment()
+        return parse_assignment(token,pos)
 
 def parse_block(token,pos):
     statements = []
@@ -103,7 +104,7 @@ def parse_block(token,pos):
         pos += 1
         
         while pos < len(token) and token[pos][0] != "RBRACE":
-            stmt, pos = parse_statement(token,pos)
+            stmt, pos = statement(token,pos)
             statements.append(stmt)
 
     if token[pos][0] == "RBRACE":
@@ -111,3 +112,34 @@ def parse_block(token,pos):
         return statements, pos
     else:
         raise SyntaxError("Expected '}'")
+
+def parse_if(token,pos):
+    pos += 1
+
+    if token[pos][0] == "LPAREN":
+        pos += 1
+        comparison_value, pos = parse_comparison(token,pos)
+        
+        if pos < len(token) and token[pos][0] == "RPAREN":
+            pos += 1
+
+            if pos < len(token) and token[pos][0] == "LBRACE":
+                block_value, pos= parse_block(token, pos)
+            else:
+                raise SyntaxError("Expected '{' after IF")
+        else:
+            raise SyntaxError("Unexpected ')'")
+
+        return (("IF",comparison_value,block_value), pos)
+    else:
+        raise SyntaxError("Expected '(' in after IF")
+
+def parse_comparison(token, pos):
+    left, pos = parse_addition(token,pos)
+
+    while pos < len(token) and token[pos][0] in boolean:
+        bool_type = token[pos][0]
+        pos += 1
+        right, pos = parse_addition(token,pos)
+        left = (bool_type, left, right)
+    return left, pos
