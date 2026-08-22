@@ -128,7 +128,7 @@ def parse_if(token,pos):
             else:
                 raise SyntaxError("Expected '{' after IF")
         else:
-            raise SyntaxError("Unexpected ')'")
+            raise SyntaxError("Expected ')'")
 
         return (("IF",comparison_value,block_value), pos)
     else:

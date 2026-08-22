@@ -44,7 +44,7 @@ def tokenize(source):
             if char_str == "==":
                 tokens.append(("EQUALEQUAL", "=="))
             elif char_str == "!=":
-                tokens.append(("NOTEQUALS", "!="))
+                tokens.append(("NOTEQUAL", "!="))
             elif char_str == "<=":
                 tokens.append(("LESSEQUAL", "<="))
             elif char_str == ">=":

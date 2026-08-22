@@ -67,6 +67,7 @@ def evaluate(node):
         var[name] = evaluate(value)
     elif tipe == "IDENTIFIER":
         nilai = node[1]
+        print(var)
 
         if nilai in var:
             return var[nilai]
