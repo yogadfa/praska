@@ -16,7 +16,7 @@ def run(source):
 
 
 # Test
-a = "if(5!=5){if(5 <= 6){a=5}}"
+a = "for(a=0; a <= 5; a += 1){1 + 1}"
 run(a)
 # Test lebih kompleks
 b = "if(1 < 4) {if(a == 5){a+5}}"

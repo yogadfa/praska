@@ -5,7 +5,8 @@ def tokenize(source):
     KEYWORDS ={
         "if":"IF",
         "else":"ELSE",
-        "elif":"ELIF"
+        "elif":"ELIF",
+        "for":"FOR"
     }
     
     i = 0
@@ -43,6 +44,10 @@ def tokenize(source):
             
             if char_str == "==":
                 tokens.append(("EQUALEQUAL", "=="))
+            elif char_str == "+=":
+                tokens.append(("PLUSEQUAL","+="))
+            elif char_str == "-=":
+                tokens.append(("MINUSEQUAL","-="))
             elif char_str == "!=":
                 tokens.append(("NOTEQUAL", "!="))
             elif char_str == "<=":
@@ -82,6 +87,8 @@ def tokenize(source):
                 tokens.append(("RBRACE","}"))
             else:
                 tokens.append(("ERROR_CHAR_NOT_DEFINED ", char_str))
+        elif char[0] == ";":
+            tokens.append(("SEMICOLON",";"))
         else:
             tokens.append(("ERROR_TYPE_NOT_DEFINED", char))
         

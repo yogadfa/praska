@@ -1,4 +1,3 @@
-from asyncio import Condition
 var = {}
 
 def evaluate(node):
@@ -50,6 +49,20 @@ def evaluate(node):
       left, right = node[1], node[2]
 
       return evaluate(left) >= evaluate(right)
+    elif tipe == "PLUSEQUAL":
+        indetifier, incrby = node[1], node[2]
+
+        if indetifier in var:
+            var[indetifier] += evaluate(incrby)
+        else:
+            raise SyntaxError(f"IDENTIFIER not definited, got {identifier}" )
+    elif tipe == "MINUSEQUAL":
+        indetifier, incrby = node[1], node[2]
+
+        if indetifier in var:
+            var[indetifier] += evaluate(incrby)
+        else:
+            raise SyntaxError(f"IDENTIFIER not definited, got {identifier}")
     elif tipe == "IF":
       condition= node[1]
       block = node[2]
@@ -59,15 +72,28 @@ def evaluate(node):
         value = []
         for stmt in block:
           value.append(evaluate(stmt))
-        return evaluate(stmt)
+        return value
       else:
         return None
+    elif tipe == "FOR":
+        init, cond, incr, block = node[1], node[2], node[3], node[4]
+
+        if init != None:
+            init = evaluate(init)
+
+        if cond == None or evaluate(cond):
+           value = []
+           while cond == None or evaluate(cond):
+                evaluate(incr)
+                for stmt in block:
+                    value.append(evaluate(stmt))
+        
+        return value
     elif tipe == "VARIABEL":
         name, value = node[1], node[2]
         var[name] = evaluate(value)
     elif tipe == "IDENTIFIER":
         nilai = node[1]
-        print(var)
 
         if nilai in var:
             return var[nilai]

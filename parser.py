@@ -1,14 +1,24 @@
 boolean = ("LESSTHAN", "GREATERTHAN", "EQUALEQUAL", "NOTEQUAL", "LESSEQUAL", "GREATEREQUAL")
 
 def parse_assignment(token, pos):
-    if pos+1 < len(token) and token[pos+1][0] == "EQUAL" and token[pos][0] == "IDENTIFIER":
+    if pos+1 < len(token) and token[pos+1][0] in ("EQUAL","MINUSEQUAL","PLUSEQUAL") and token[pos][0] == "IDENTIFIER":
+        tipe = token[pos+1][0]
         identifier = token[pos][1]
         pos += 2
 
         value, pos = parse_addition(token, pos)
-        i = ("VARIABEL", identifier, value)
+        if tipe == "EQUAL":
+            result = ("VARIABEL", identifier, value)
 
-        return (i, pos)
+            return (result, pos)
+        elif tipe == "PLUSEQUAL":
+            result = ("PLUSEQUAL", identifier, value)
+
+            return (result, pos)
+        elif tipe == "MINUSEQUAL":
+            result = ("MINUSEQUAL", identifier, value)
+
+            return (result, pos)
     else:
         value, pos = parse_addition(token,pos)
 
@@ -41,20 +51,26 @@ def parse_primary(token, pos):
             return value,pos
         else:
             raise SyntaxError(f"Expected ')'")
-    elif tipe == "MINUS":
+    elif tipe == "SEMICOLON":
         pos += 1
-        value, pos = parse_primary(token, pos)
         
-        return value, pos
+        return (tipe, nilai)
     elif tipe == "IDENTIFIER":
         pos += 1
-
+        
         return ((tipe,nilai), pos)
+    elif tipe in ("PLUSEQUAL","MINUSEQUAL"):
+        if tipe == "PLUSEQUAL":
+            return (tipe,nilai),pos
+        elif tipe == "MINUSEQUAL":
+            return (tipe,nilai),pos
+        else:
+            raise SyntaxError(f"Expected a type, got {tipe}")
     else:
         raise SyntaxError(f"Expected a type, got {tipe}")
 
 def parse_unary(token, pos):
-    if pos > len(token):
+    if pos >= len(token):
         raise SyntaxError("Unexpected end of input")
     
     if token[pos][0] == "MINUS":
@@ -95,6 +111,8 @@ def parse_addition(token, pos):
 def statement(token,pos):
     if token[pos][0] == "IF":
         return parse_if(token, pos)
+    elif token[pos][0] == "FOR":
+        return parse_for(token, pos)
     else:
         return parse_assignment(token,pos)
 
@@ -106,6 +124,8 @@ def parse_block(token,pos):
         while pos < len(token) and token[pos][0] != "RBRACE":
             stmt, pos = statement(token,pos)
             statements.append(stmt)
+    else:
+        raise SyntaxError("Expected '{'")
 
     if token[pos][0] == "RBRACE":
         pos +=1
@@ -133,6 +153,46 @@ def parse_if(token,pos):
         return (("IF",comparison_value,block_value), pos)
     else:
         raise SyntaxError("Expected '(' in after IF")
+
+def parse_for(token, pos):
+    pos += 1
+    
+    if pos < len(token) and token[pos][0] == "LPAREN":
+        pos += 1
+        if token[pos][0] != "SEMICOLON":
+          init, pos = parse_assignment(token,pos)
+          pos += 1
+        else:
+            init = None
+            pos += 1
+            
+        if pos < len(token) and token[pos][0] != "SEMICOLON":
+            cond, pos= parse_comparison(token, pos)
+            pos += 1
+        else:
+            cond = None
+            pos += 1
+            
+
+        if pos < len(token) and token[pos][0] != "RPAREN":
+            incr, pos = parse_assignment(token, pos)
+            if pos < len(token) and token[pos][0] == "RPAREN":
+                pos += 1
+            else:
+                raise SyntaxError("Expected ')' after FOR")
+        else:
+            incr = None
+            pos += 1
+
+        block, pos = parse_block(token, pos)
+    else:
+        raise SyntaxError("Expected '(' after FOR")
+        
+    return ("FOR", init, cond, incr, block), pos
+    
+
+        
+    
 
 def parse_comparison(token, pos):
     left, pos = parse_addition(token,pos)
