@@ -6,7 +6,8 @@ def tokenize(source):
         "if":"IF",
         "else":"ELSE",
         "elif":"ELIF",
-        "for":"FOR"
+        "for":"FOR",
+        "while":"WHILE"
     }
     
     i = 0

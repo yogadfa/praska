@@ -113,6 +113,8 @@ def statement(token,pos):
         return parse_if(token, pos)
     elif token[pos][0] == "FOR":
         return parse_for(token, pos)
+    elif token[pos][0] == "WHILE":
+        return parse_while(token, pos)
     else:
         return parse_assignment(token,pos)
 
@@ -189,10 +191,25 @@ def parse_for(token, pos):
         raise SyntaxError("Expected '(' after FOR")
         
     return ("FOR", init, cond, incr, block), pos
-    
 
+def parse_while(token, pos):
+    pos += 1
+
+    if pos < len(token) and token[pos][0] == "LPAREN":
+        pos += 1
+
+        cond, pos = parse_comparison(token, pos)
         
-    
+        if pos < len(token) and token[pos][0] == "RPAREN":
+            pos += 1
+            block, pos = parse_block(token, pos)
+
+            return ("WHILE", cond, block), pos
+        else:
+            raise SyntaxError("Expected ')' after WHILE")
+    else:
+        raise SyntaxError("Expected '(' after WHILE")
+        
 
 def parse_comparison(token, pos):
     left, pos = parse_addition(token,pos)
