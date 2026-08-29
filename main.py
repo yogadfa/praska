@@ -16,7 +16,7 @@ def run(source):
 
 
 # Test
-a = "while(1<2){1+1}"
+a = "a = 2 while(a<5){a += 1}"
 run(a)
 # Test lebih kompleks
 b = "if(1 < 4) {if(a == 5){a+5}}"

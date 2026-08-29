@@ -87,8 +87,18 @@ def evaluate(node):
                 evaluate(incr)
                 for stmt in block:
                     value.append(evaluate(stmt))
+           return value
+
+    elif tipe == "WHILE":
+        cond, block = node[1], node[2]
+
+        if cond == None or evaluate(cond):
+            value = []
+            while cond == None or evaluate(cond):
+                for stmt in block:
+                    value.append(evaluate(stmt))
+            return value
         
-        return value
     elif tipe == "VARIABEL":
         name, value = node[1], node[2]
         var[name] = evaluate(value)
