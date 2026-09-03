@@ -116,5 +116,8 @@ def evaluate(node):
     elif tipe == "PRINT":
         value = node[1]
         print(evaluate(value), end = "")
+    elif tipe == "PRINTLN":
+        value = node[1]
+        print(evaluate(value))
     else:
         raise SyntaxError(f"expected OP type {tipe}")

@@ -12,6 +12,6 @@ def run(source):
 
 
 # Test
-code = 'print("lorem")'
+code = 'println("lorem") print("ipsum")'
 run(code)
 
