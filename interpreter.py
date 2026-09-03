@@ -109,5 +109,12 @@ def evaluate(node):
             return var[nilai]
         else:
             raise SyntaxError(f"Error identifier no definited, got {nilai}")
+    elif tipe == "STRING":
+        value = node[1]
+
+        return value
+    elif tipe == "PRINT":
+        value = node[1]
+        print(evaluate(value), end = "")
     else:
         raise SyntaxError(f"expected OP type {tipe}")

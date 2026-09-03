@@ -7,7 +7,9 @@ def tokenize(source):
         "else":"ELSE",
         "elif":"ELIF",
         "for":"FOR",
-        "while":"WHILE"
+        "while":"WHILE",
+        "print":"PRINT",
+        "println":"PRINTLN"
     }
     
     i = 0
@@ -33,7 +35,15 @@ def tokenize(source):
             else:
                 tokens.append(("IDENTIFIER", var_str))
             continue
-            
+
+        elif char == '"':
+            i += 1
+            start = i
+            while i < len(source) and source[i] != '"':
+                i += 1
+            string = source[start:i]
+            tokens.append(("STRING", string))
+        
         elif char == " ":
             pass
             

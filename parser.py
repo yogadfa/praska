@@ -66,8 +66,9 @@ def parse_primary(token, pos):
             return (tipe,nilai),pos
         else:
             raise SyntaxError(f"Expected a type, got {tipe}")
-    else:
-        raise SyntaxError(f"Expected a type, got {tipe}")
+    elif tipe == "STRING":
+        pos+= 1
+        return (tipe, nilai), pos
 
 def parse_unary(token, pos):
     if pos >= len(token):
@@ -115,6 +116,10 @@ def statement(token,pos):
         return parse_for(token, pos)
     elif token[pos][0] == "WHILE":
         return parse_while(token, pos)
+    elif token[pos][0] == "PRINT":
+        return parse_print(token, pos)
+    elif token[pos][0] == "PRINTLN":
+        return parse_println(token, pos)
     else:
         return parse_assignment(token,pos)
 
@@ -220,3 +225,23 @@ def parse_comparison(token, pos):
         right, pos = parse_addition(token,pos)
         left = (bool_type, left, right)
     return left, pos
+
+def parse_print(token, pos):
+    pos += 1
+
+    if pos < len(token) and token[pos][0] == "LPAREN":
+        value, pos = parse_assignment(token, pos)
+
+        return ("PRINT", value), pos
+    else:
+        raise SyntaxError("Expected '(' after PRINT")
+
+def parse_println(token, pos):
+    pos += 1
+
+    if pos < len(token) and token[pos][0] == "LPAREN":
+        value, pos = parse_assignment(token, pos)
+
+        return ("PRINTLN", value), pos
+    else:
+         raise SyntaxError("Expected '(' after PRINTLN")
