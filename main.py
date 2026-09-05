@@ -1,3 +1,5 @@
+#!/data/data/com.termux/files/usr/bin/python
+import sys
 import parser
 import lexer
 import interpreter
@@ -10,8 +12,10 @@ def run(source):
         value, pos = parser.statement(token, pos)
         runing  = interpreter.evaluate(value)
 
+fileprk = sys.argv[1]
 
-# Test
-code = 'println("lorem") print("ipsum")'
-run(code)
+with open(fileprk, "r") as f:
+    isi = f.read()
+
+run(isi)
 

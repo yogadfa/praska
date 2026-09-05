@@ -15,7 +15,7 @@ def run(source):
 
 
 # Test
-a = 'println("lorem") print("ipsum")'
+a = 'println("anis")'
 run(a)
 # Test lebih kompleks
 b = "if(1 < 4) {if(a == 5){a+5}}"

@@ -67,7 +67,7 @@ def parse_primary(token, pos):
         else:
             raise SyntaxError(f"Expected a type, got {tipe}")
     elif tipe == "STRING":
-        pos+= 1
+        pos += 1
         return (tipe, nilai), pos
 
 def parse_unary(token, pos):

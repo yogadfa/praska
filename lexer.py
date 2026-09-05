@@ -44,7 +44,7 @@ def tokenize(source):
             string = source[start:i]
             tokens.append(("STRING", string))
         
-        elif char == " ":
+        elif char == " " or char == "\n" or char == "\t":
             pass
             
         elif char in op or char in boolean:
