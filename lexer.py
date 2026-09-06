@@ -41,6 +41,9 @@ def tokenize(source):
             start = i
             while i < len(source) and source[i] != '"':
                 i += 1
+            if i >= len(source):
+                raise SyntaxError('Expected "')
+            
             string = source[start:i]
             tokens.append(("STRING", string))
         

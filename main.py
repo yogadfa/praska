@@ -3,6 +3,7 @@ import sys
 import parser
 import lexer
 import interpreter
+import debug
 
 def run(source):
     token = lexer.tokenize(source)
@@ -12,10 +13,15 @@ def run(source):
         value, pos = parser.statement(token, pos)
         runing  = interpreter.evaluate(value)
 
-fileprk = sys.argv[1]
+for item in sys.argv:
+    if item.endswith(".prk"):
+        fileprk = item
 
 with open(fileprk, "r") as f:
     isi = f.read()
 
-run(isi)
+if "--debug" in sys.argv:
+     debug.run(isi)
+else:
+     run(isi)
 

@@ -12,11 +12,3 @@ def run(source):
         print("parser.statement tuple return:", value)
         print()
         runing  = interpreter.evaluate(value)
-
-
-# Test
-a = 'println("anis")'
-run(a)
-# Test lebih kompleks
-b = "if(1 < 4) {if(a == 5){a+5}}"
-#run(b)
