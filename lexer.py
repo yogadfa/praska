@@ -9,7 +9,8 @@ def tokenize(source):
         "for":"FOR",
         "while":"WHILE",
         "print":"PRINT",
-        "println":"PRINTLN"
+        "println":"PRINTLN",
+        "break":"BREAK"
     }
     
     i = 0

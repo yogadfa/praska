@@ -84,9 +84,9 @@ def evaluate(node):
         if cond == None or evaluate(cond):
            value = []
            while cond == None or evaluate(cond):
-                evaluate(incr)
                 for stmt in block:
                     value.append(evaluate(stmt))
+                evaluate(incr)
            return value
 
     elif tipe == "WHILE":
