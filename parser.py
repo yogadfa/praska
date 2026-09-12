@@ -145,7 +145,10 @@ def parse_if(token,pos):
 
     if token[pos][0] == "LPAREN":
         pos += 1
-        comparison_value, pos = parse_comparison(token,pos)
+        if token[pos][0] == "RPAREN":
+            comparison_value = None
+        else:
+            comparison_value, pos = parse_comparison(token,pos)
         
         if pos < len(token) and token[pos][0] == "RPAREN":
             pos += 1
@@ -203,7 +206,10 @@ def parse_while(token, pos):
     if pos < len(token) and token[pos][0] == "LPAREN":
         pos += 1
 
-        cond, pos = parse_comparison(token, pos)
+        if token[pos][0] != "RPAREN":
+             cond, pos = parse_comparison(token, pos)
+        else:
+             cond = None
         
         if pos < len(token) and token[pos][0] == "RPAREN":
             pos += 1

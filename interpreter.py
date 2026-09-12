@@ -66,7 +66,11 @@ def evaluate(node):
     elif tipe == "IF":
       condition= node[1]
       block = node[2]
-      condition = evaluate(condition)
+
+      if condition != None:
+         condition = evaluate(condition)
+      else:
+         condition = True
 
       if condition == True:
         value = []
