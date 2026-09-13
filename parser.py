@@ -120,6 +120,8 @@ def statement(token,pos):
         return parse_print(token, pos)
     elif token[pos][0] == "PRINTLN":
         return parse_println(token, pos)
+    elif token[pos][0] == "BREAK":
+        return parse_break(token,pos)
     else:
         return parse_assignment(token,pos)
 
@@ -169,7 +171,7 @@ def parse_for(token, pos):
     
     if pos < len(token) and token[pos][0] == "LPAREN":
         pos += 1
-        if token[pos][0] != "SEMICOLON":
+        if pos < len(token) and token[pos][0] != "SEMICOLON":
           init, pos = parse_assignment(token,pos)
           pos += 1
         else:
@@ -251,3 +253,7 @@ def parse_println(token, pos):
         return ("PRINTLN", value), pos
     else:
          raise SyntaxError("Expected '(' after PRINTLN")
+
+def parse_break(token, pos):
+    pos += 1
+    return ("BREAK","break"),pos
