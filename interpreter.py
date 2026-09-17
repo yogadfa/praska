@@ -1,4 +1,6 @@
 var = {}
+class BreakException(Exception):
+    pass
 
 def evaluate(node):
     tipe = node[0]
@@ -91,9 +93,9 @@ def evaluate(node):
             while cond == None or evaluate(cond):
                for stmt in block:
                   value.append(evaluate(stmt))
-                  if incr != None:
-                      evaluate(incr)
-               return value
+               if incr != None:
+                  evaluate(incr)
+            return value
            except BreakException:
             pass
 
