@@ -54,7 +54,7 @@ def parse_primary(token, pos):
     elif tipe == "SEMICOLON":
         pos += 1
         
-        return (tipe, nilai)
+        return (tipe, nilai),pos
     elif tipe == "IDENTIFIER":
         pos += 1
         

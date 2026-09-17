@@ -87,22 +87,28 @@ def evaluate(node):
 
         if cond == None or evaluate(cond):
            value = []
-           while cond == None or evaluate(cond):
-                for stmt in block:
-                    value.append(evaluate(stmt))
-                if incr != None:
-                    evaluate(incr)
-           return value
+           try:
+            while cond == None or evaluate(cond):
+               for stmt in block:
+                  value.append(evaluate(stmt))
+                  if incr != None:
+                      evaluate(incr)
+               return value
+           except BreakException:
+            pass
 
     elif tipe == "WHILE":
         cond, block = node[1], node[2]
-
+        
         if cond == None or evaluate(cond):
             value = []
-            while cond == None or evaluate(cond):
-                for stmt in block:
-                    value.append(evaluate(stmt))
-            return value
+            try:
+              while cond == None or evaluate(cond):
+                 for stmt in block:
+                     value.append(evaluate(stmt))
+              return value
+            except BreakException:
+                pass
         
     elif tipe == "VARIABEL":
         name, value = node[1], node[2]
@@ -124,5 +130,7 @@ def evaluate(node):
     elif tipe == "PRINTLN":
         value = node[1]
         print(evaluate(value))
+    elif tipe == "BREAK":
+        raise BreakException()
     else:
         raise SyntaxError(f"expected OP type {tipe}")
