@@ -161,8 +161,16 @@ def parse_if(token,pos):
                 raise SyntaxError("Expected '{' after IF")
         else:
             raise SyntaxError("Expected ')'")
-
-        return (("IF",comparison_value,block_value), pos)
+        if pos < len(token) and token[pos][0] == "ELIF":
+            elif_node, pos = parse_if(token, pos)
+            
+            return(("IF",comparison_value,block_value,elif_node),pos)
+        elif pos < len(token) and token[pos][0] == "ELSE":
+            pos += 1
+            else_node, pos = parse_block(token, pos)
+            return(("IF",comparison_value,block_value,else_node), pos)
+        else:
+            return (("IF",comparison_value,block_value,None), pos)
     else:
         raise SyntaxError("Expected '(' in after IF")
 
