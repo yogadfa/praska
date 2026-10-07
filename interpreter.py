@@ -68,6 +68,7 @@ def evaluate(node):
     elif tipe == "IF":
       condition= node[1]
       block = node[2]
+      node4 = node[3]
 
       if condition != None:
          condition = evaluate(condition)
@@ -80,7 +81,15 @@ def evaluate(node):
           value.append(evaluate(stmt))
         return value
       else:
-        return None
+        if node4[0] == "IF":
+            return evaluate(node[3])
+        elif node4 != None:
+            value = []
+            for stmt in node4:
+                value.append(evaluate(stmt))
+            return value
+        else:
+            return None
     elif tipe == "FOR":
         init, cond, incr, block = node[1], node[2], node[3], node[4]
 
