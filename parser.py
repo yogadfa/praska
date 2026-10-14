@@ -69,6 +69,8 @@ def parse_primary(token, pos):
     elif tipe == "STRING":
         pos += 1
         return (tipe, nilai), pos
+    else:
+        raise SyntaxError(f"Unexpected token, got {tipe}")
 
 def parse_unary(token, pos):
     if pos >= len(token):

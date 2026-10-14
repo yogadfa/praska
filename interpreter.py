@@ -30,7 +30,6 @@ def evaluate(node):
     elif tipe == "EQUALEQUAL":
       left, right = node[1], node[2]
 
-      return evaluate(left) == evaluate(right)
     elif tipe == "NOTEQUAL":
       left, right = node[1], node[2]
 
@@ -52,17 +51,17 @@ def evaluate(node):
 
       return evaluate(left) >= evaluate(right)
     elif tipe == "PLUSEQUAL":
-        indetifier, incrby = node[1], node[2]
+        identifier, incrby = node[1], node[2]
 
-        if indetifier in var:
-            var[indetifier] += evaluate(incrby)
+        if identifier in var:
+            var[identifier] += evaluate(incrby)
         else:
             raise SyntaxError(f"IDENTIFIER not definited, got {identifier}" )
     elif tipe == "MINUSEQUAL":
-        indetifier, incrby = node[1], node[2]
+        identifier, incrby = node[1], node[2]
 
-        if indetifier in var:
-            var[indetifier] += evaluate(incrby)
+        if identifier in var:
+            var[identifier] -= evaluate(incrby)
         else:
             raise SyntaxError(f"IDENTIFIER not definited, got {identifier}")
     elif tipe == "IF":
@@ -81,15 +80,15 @@ def evaluate(node):
           value.append(evaluate(stmt))
         return value
       else:
-        if node4[0] == "IF":
-            return evaluate(node[3])
-        elif node4 != None:
+        if node4 == None:
+            pass
+        elif node4 == "IF":
+            return evaluate(node4)
+        else:
             value = []
             for stmt in node4:
                 value.append(evaluate(stmt))
             return value
-        else:
-            return None
     elif tipe == "FOR":
         init, cond, incr, block = node[1], node[2], node[3], node[4]
 
