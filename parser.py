@@ -61,8 +61,10 @@ def parse_primary(token, pos):
         return ((tipe,nilai), pos)
     elif tipe in ("PLUSEQUAL","MINUSEQUAL"):
         if tipe == "PLUSEQUAL":
+            pos += 1
             return (tipe,nilai),pos
         elif tipe == "MINUSEQUAL":
+            pos += 1
             return (tipe,nilai),pos
         else:
             raise SyntaxError(f"Expected a type, got {tipe}")
@@ -138,7 +140,7 @@ def parse_block(token,pos):
     else:
         raise SyntaxError("Expected '{'")
 
-    if token[pos][0] == "RBRACE":
+    if pos < len(token) and token[pos][0] == "RBRACE":
         pos +=1
         return statements, pos
     else:
