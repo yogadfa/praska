@@ -30,6 +30,7 @@ def evaluate(node):
     elif tipe == "EQUALEQUAL":
       left, right = node[1], node[2]
 
+      return evaluate(left) == evaluate(right)
     elif tipe == "NOTEQUAL":
       left, right = node[1], node[2]
 
@@ -82,7 +83,7 @@ def evaluate(node):
       else:
         if node4 == None:
             pass
-        elif node4 == "IF":
+        elif node4[0] == "IF":
             return evaluate(node4)
         else:
             value = []
