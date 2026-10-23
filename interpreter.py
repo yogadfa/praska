@@ -2,6 +2,9 @@ var = {}
 class BreakException(Exception):
     pass
 
+class ContinueException(Exception):
+    pass
+
 def evaluate(node):
     tipe = node[0]
 
@@ -100,8 +103,12 @@ def evaluate(node):
            value = []
            try:
             while cond == None or evaluate(cond):
-               for stmt in block:
+               try:
+                for stmt in block:
                   value.append(evaluate(stmt))
+               except ContinueException:
+                pass
+                
                if incr != None:
                   evaluate(incr)
             return value
@@ -115,8 +122,11 @@ def evaluate(node):
             value = []
             try:
               while cond == None or evaluate(cond):
+                try:
                  for stmt in block:
                      value.append(evaluate(stmt))
+                except ContinueException:
+                    pass
               return value
             except BreakException:
                 pass
@@ -137,11 +147,19 @@ def evaluate(node):
         return value
     elif tipe == "PRINT":
         value = node[1]
-        print(evaluate(value), end = "")
+        if value != None:
+            print(evaluate(value), end = "")
+        else:
+            print(end = "")
     elif tipe == "PRINTLN":
         value = node[1]
-        print(evaluate(value))
+        if value != None:
+            print(evaluate(value))
+        else:
+            print()
     elif tipe == "BREAK":
         raise BreakException()
+    elif tipe == "CONTINUE":
+        raise ContinueException()
     else:
         raise SyntaxError(f"expected OP type {tipe}")

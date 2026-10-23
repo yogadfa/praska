@@ -126,6 +126,8 @@ def statement(token,pos):
         return parse_println(token, pos)
     elif token[pos][0] == "BREAK":
         return parse_break(token,pos)
+    elif token[pos][0] == "CONTINUE":
+        return parse_continue(token, pos)
     else:
         return parse_assignment(token,pos)
 
@@ -269,3 +271,7 @@ def parse_println(token, pos):
 def parse_break(token, pos):
     pos += 1
     return ("BREAK","break"),pos
+
+def parse_continue(token, pos):
+    pos += 1
+    return ("CONTINUE","continue"),pos
