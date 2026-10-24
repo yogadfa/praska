@@ -5,6 +5,14 @@ class BreakException(Exception):
 class ContinueException(Exception):
     pass
 
+def run(stmt):
+    try:
+        return evaluate(stmt)
+    except BreakException:
+        raise SyntaxError("'break' outside loop")
+    except ContinueException:
+        raise SyntaxError("'continue' outside loop")
+
 def evaluate(node):
     tipe = node[0]
 
@@ -60,14 +68,14 @@ def evaluate(node):
         if identifier in var:
             var[identifier] += evaluate(incrby)
         else:
-            raise SyntaxError(f"IDENTIFIER not definited, got {identifier}" )
+            raise SyntaxError(f"Undefined identifier '{identifier}'" )
     elif tipe == "MINUSEQUAL":
         identifier, incrby = node[1], node[2]
 
         if identifier in var:
             var[identifier] -= evaluate(incrby)
         else:
-            raise SyntaxError(f"IDENTIFIER not definited, got {identifier}")
+            raise SyntaxError(f"Undefined identifier '{identifier}'")
     elif tipe == "IF":
       condition= node[1]
       block = node[2]
@@ -140,7 +148,7 @@ def evaluate(node):
         if nilai in var:
             return var[nilai]
         else:
-            raise SyntaxError(f"Error identifier no definited, got {nilai}")
+            raise SyntaxError(f"Undefined identifier '{identifier}'")
     elif tipe == "STRING":
         value = node[1]
 
@@ -162,4 +170,4 @@ def evaluate(node):
     elif tipe == "CONTINUE":
         raise ContinueException()
     else:
-        raise SyntaxError(f"expected OP type {tipe}")
+        raise SyntaxError(f"Unknown node type '{type}'")

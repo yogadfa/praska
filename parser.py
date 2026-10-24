@@ -50,7 +50,7 @@ def parse_primary(token, pos):
             
             return value,pos
         else:
-            raise SyntaxError(f"Expected ')'")
+            raise SyntaxError("Expected ')'")
     elif tipe == "SEMICOLON":
         pos += 1
         
@@ -166,7 +166,7 @@ def parse_if(token,pos):
             else:
                 raise SyntaxError("Expected '{' after IF")
         else:
-            raise SyntaxError("Expected ')'")
+            raise SyntaxError("Expected ')' after IF")
         if pos < len(token) and token[pos][0] == "ELIF":
             elif_node, pos = parse_if(token, pos)
             
@@ -178,7 +178,7 @@ def parse_if(token,pos):
         else:
             return (("IF",comparison_value,block_value,None), pos)
     else:
-        raise SyntaxError("Expected '(' in after IF")
+        raise SyntaxError("Expected '(' after IF")
 
 def parse_for(token, pos):
     pos += 1

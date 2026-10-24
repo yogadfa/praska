@@ -11,7 +11,7 @@ def run(source):
     
     while pos < len(token):
         value, pos = parser.statement(token, pos)
-        runing  = interpreter.evaluate(value)
+        runing  = interpreter.run(value)
 
 for item in sys.argv:
     if item.endswith(".prk"):

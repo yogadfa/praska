@@ -12,4 +12,4 @@ def run(source):
         value, pos = parser.statement(token, pos)
         print("parser.statement tuple return:", value)
         print()
-        runing  = interpreter.evaluate(value)
+        runing  = interpreter.run(value)
